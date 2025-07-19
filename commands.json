@@ -1,0 +1,14 @@
+[
+  {
+    "command": "/help",
+    "reply": "🛠 Available commands: /help /ping /auto /uid /renameall /locktitle"
+  },
+  {
+    "command": "/ping",
+    "reply": "🏓 Bot is active!"
+  },
+  {
+    "command": "/auto",
+    "reply": "✅ Auto-reply is now ON"
+  }
+]
