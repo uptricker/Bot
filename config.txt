@@ -1,3 +1,0 @@
-delay=5
-lock_title=True
-lock_name=True
