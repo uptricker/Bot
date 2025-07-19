@@ -1,15 +1,18 @@
-import asyncio
-import json
-import threading
-from flask import Flask
+import asyncio, json, re
 from playwright.async_api import async_playwright
-
-app = Flask(__name__)
+from flask import Flask
+import threading
 
 GROUP_URL = "https://www.facebook.com/messages/t/9531602573607816/"
 
+app = Flask(__name__)
+
 def start_bot_loop():
     asyncio.run(run_bot())
+
+@app.route('/')
+def home():
+    return "🤖 Messenger Command Bot is Live!"
 
 async def run_bot():
     print("🤖 Bot is live. Listening for commands...\n")
@@ -26,13 +29,13 @@ async def run_bot():
         page = await context.new_page()
 
         await page.goto(GROUP_URL)
-        await page.wait_for_selector('div[role='row'] div[dir='auto']', timeout=15000)
-        print("✅ Chat loaded. Bot started.")
+        await page.wait_for_selector("div[role=\"row\"] div[dir=\"auto\"]", timeout=15000)
+        print("✅ Loaded chat.")
 
         last_seen = set()
 
         while True:
-            messages = await page.query_selector_all('div[role="row"] div[dir="auto"]')
+            messages = await page.query_selector_all("div[role=\"row\"] div[dir=\"auto\"]")
             for msg in messages[-10:]:
                 text = await msg.inner_text()
                 if text not in last_seen:
@@ -44,13 +47,10 @@ async def run_bot():
                             response = cmd["reply"]
                             await page.type('div[aria-label="Message"]', response)
                             await page.keyboard.press("Enter")
-                            print(f"⚙️ Replied to: {cmd['command']}")
+                            print(f"⚙️ Responded to: {cmd['command']}")
             await asyncio.sleep(5)
-
-@app.route('/')
-def home():
-    return "✅ FB Messenger Command Bot is running."
 
 if __name__ == "__main__":
     threading.Thread(target=start_bot_loop).start()
-    app.run(host='0.0.0.0', port=10000)
+    app.run(host="0.0.0.0", port=10000)
+    
