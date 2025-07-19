@@ -1,12 +1,19 @@
-import asyncio, json, re
+import asyncio
+import json
+import threading
+from flask import Flask
 from playwright.async_api import async_playwright
 
-GROUP_URL = "https://www.facebook.com/messages/t/23897623639929962/"
+app = Flask(__name__)
+
+GROUP_URL = "https://www.facebook.com/messages/t/9531602573607816/"
+
+def start_bot_loop():
+    asyncio.run(run_bot())
 
 async def run_bot():
     print("🤖 Bot is live. Listening for commands...\n")
 
-    # Load cookies
     with open("fbstate.json", "r") as f:
         cookies = json.load(f)
 
@@ -19,8 +26,8 @@ async def run_bot():
         page = await context.new_page()
 
         await page.goto(GROUP_URL)
-        await page.wait_for_selector('div[role="row"] div[dir="auto"]', timeout=15000)
-        print("✅ Loaded chat.")
+        await page.wait_for_selector('div[role='row'] div[dir='auto']', timeout=15000)
+        print("✅ Chat loaded. Bot started.")
 
         last_seen = set()
 
@@ -37,9 +44,13 @@ async def run_bot():
                             response = cmd["reply"]
                             await page.type('div[aria-label="Message"]', response)
                             await page.keyboard.press("Enter")
-                            print(f"⚙️ Responded to: {cmd['command']}")
+                            print(f"⚙️ Replied to: {cmd['command']}")
             await asyncio.sleep(5)
-            
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
-    
+
+@app.route('/')
+def home():
+    return "✅ FB Messenger Command Bot is running."
+
+if __name__ == "__main__":
+    threading.Thread(target=start_bot_loop).start()
+    app.run(host='0.0.0.0', port=10000)
