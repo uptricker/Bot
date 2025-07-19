@@ -1,7 +1,7 @@
 import asyncio, json, re
 from playwright.async_api import async_playwright
 
-GROUP_URL = "https://www.facebook.com/messages/t/9531602573607816/"
+GROUP_URL = "https://www.facebook.com/messages/t/23897623639929962/"
 
 async def run_bot():
     print("🤖 Bot is live. Listening for commands...\n")
