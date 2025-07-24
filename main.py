@@ -3,7 +3,7 @@ from playwright.async_api import async_playwright
 from flask import Flask
 import threading
 
-GROUP_URL = "https://www.facebook.com/messages/t/9531602573607816/"
+GROUP_URL = "https://www.facebook.com/messages/t/24292795350336668/"
 
 app = Flask(__name__)
 
